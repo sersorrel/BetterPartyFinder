@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net6-windows</TargetFramework>
-        <Version>1.2.4</Version>
+        <Version>1.2.5</Version>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -52,7 +52,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.7"/>
+        <PackageReference Include="DalamudPackager" Version="2.1.8"/>
         <PackageReference Include="XivCommon" Version="6.0.0"/>
     </ItemGroup>
 
