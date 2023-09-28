@@ -25,7 +25,7 @@ namespace BetterPartyFinder {
             SeString msg = "Party description: ";
             msg.Payloads.AddRange(listing.Description.Payloads);
 
-            this.Plugin.ChatGui.PrintChat(new XivChatEntry {
+            this.Plugin.ChatGui.Print(new XivChatEntry {
                 Name = "Better Party Finder",
                 Type = XivChatType.SystemMessage,
                 Message = msg,
