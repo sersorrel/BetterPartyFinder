@@ -40,7 +40,7 @@ namespace BetterPartyFinder {
             this.Config = Configuration.Load(this) ?? new Configuration();
             this.Config.Initialise(this);
 
-            this.Common = new XivCommonBase(Hooks.PartyFinder);
+            this.Common = new XivCommonBase(this.Interface, Hooks.PartyFinder);
             this.Filter = new Filter(this);
             this.JoinHandler = new JoinHandler(this);
             this.Ui = new PluginUi(this);
