@@ -15,15 +15,15 @@ using Addon = Lumina.Excel.GeneratedSheets.Addon;
 namespace BetterPartyFinder {
     public class PluginUi : IDisposable {
         private static readonly uint[] AllowedContentTypes = {
-            2,
-            3,
-            4,
-            5,
-            6,
-            16,
-            21,
-            26,
-            28,
+            2,   // Dungeons
+            3,   // Guildhests
+            4,   // Trials
+            5,   // Raids
+            6,   // PvP
+            16,  //
+            21,  // Deep Dungeons
+            26,  // Eureka
+            28,  // Ultimate Raids
             30,  // V&C Dungeon Finder
         };
 
