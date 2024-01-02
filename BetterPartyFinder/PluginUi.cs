@@ -24,6 +24,7 @@ namespace BetterPartyFinder {
             21,
             26,
             28,
+            30,  // V&C Dungeon Finder
         };
 
         private Plugin Plugin { get; }
@@ -676,6 +677,7 @@ namespace BetterPartyFinder {
         GatheringForays,
         DeepDungeons,
         AdventuringForays,
+        VCDungeon,
     }
 
     internal static class UiCategoryExt {
@@ -699,6 +701,7 @@ namespace BetterPartyFinder {
                 UiCategory.GatheringForays => addon.GetRow(2_306)?.Text.ToString(),
                 UiCategory.DeepDungeons => ct.GetRow((uint) ContentType2.DeepDungeons)?.Name.ToString(),
                 UiCategory.AdventuringForays => addon.GetRow(2_307)?.Text.ToString(),
+                UiCategory.VCDungeon => ct.GetRow((uint)ContentType2.VCDungeon)?.Name.ToString(),
                 _ => null,
             };
         }
@@ -728,6 +731,7 @@ namespace BetterPartyFinder {
                 UiCategory.GatheringForays => isNormal && listing.Category == DutyCategory.GatheringForays,
                 UiCategory.DeepDungeons => isOther && listing.Category == DutyCategory.DeepDungeons,
                 UiCategory.AdventuringForays => isNormal && listing.Category == DutyCategory.AdventuringForays,
+                UiCategory.VCDungeon => isNormal && listing.Duty.Value.ContentType.Row == (uint) ContentType2.VCDungeon,
                 _ => false,
             };
         }
@@ -757,6 +761,7 @@ namespace BetterPartyFinder {
             CustomDeliveries = 25,
             Eureka = 26,
             UltimateRaids = 28,
+            VCDungeon = 30,
         }
     }
 }
