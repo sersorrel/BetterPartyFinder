@@ -364,7 +364,7 @@ namespace BetterPartyFinder {
 
             if (ImGui.BeginChild("duty-selection", new Vector2(-1f, -1f))) {
                 var duties = this.Plugin.DataManager.GetExcelSheet<ContentFinderCondition>()!
-                    .Where(cf => cf.Unknown29)
+                    .Where(cf => cf.Unknown30)
                     .Where(cf => AllowedContentTypes.Contains(cf.ContentType.Row));
 
                 var searchQuery = this.DutySearchQuery.Trim();
@@ -706,15 +706,19 @@ namespace BetterPartyFinder {
             };
         }
 
-        internal static bool ListingMatches(this UiCategory category, IDataManager data, PartyFinderListing listing) {
+        internal static bool ListingMatches(this UiCategory category, IDataManager data, IPartyFinderListing listing, IPluginLog log) {
             var cr = data.GetExcelSheet<ContentRoulette>()!;
 
-            var isDuty = listing.Category == DutyCategory.Duty;
+            var isDuty = listing.Category is DutyCategory.None or DutyCategory.DutyRoulette or DutyCategory.Dungeon
+                or DutyCategory.Guildhest or DutyCategory.Trial or DutyCategory.Raid or DutyCategory.HighEndDuty
+                or DutyCategory.PvP; // tldr: "high byte is 0"
             var isNormal = listing.DutyType == DutyType.Normal;
             var isOther = listing.DutyType == DutyType.Other;
             var isNormalDuty = isNormal && isDuty;
 
-            return category switch {
+            log.Verbose($"name {category.Name(data)}/{listing.Name.TextValue}, isduty {isDuty} {isNormal} {isOther} {isNormalDuty}, cat {listing.Category}, type {listing.DutyType}, raw {listing.RawDuty}");
+
+            var result = category switch {
                 UiCategory.None => isOther && isDuty && listing.RawDuty == 0,
                 UiCategory.DutyRoulette => listing.DutyType == DutyType.Roulette && isDuty && (!cr.GetRow(listing.RawDuty)?.IsPvP ?? false),
                 UiCategory.Dungeons => isNormalDuty && listing.Duty.Value.ContentType.Row == (uint) ContentType2.Dungeons,
@@ -724,16 +728,20 @@ namespace BetterPartyFinder {
                 UiCategory.HighEndDuty => isNormalDuty && listing.Duty.Value.HighEndDuty,
                 UiCategory.Pvp => listing.DutyType == DutyType.Roulette && isDuty && (cr.GetRow(listing.RawDuty)?.IsPvP ?? false)
                                   || isNormalDuty && listing.Duty.Value.ContentType.Row == (uint) ContentType2.Pvp,
-                UiCategory.QuestBattles => isOther && listing.Category == DutyCategory.QuestBattles,
-                UiCategory.Fates => isOther && listing.Category == DutyCategory.Fates,
+                UiCategory.QuestBattles => isOther && listing.Category == DutyCategory.GoldSaucer,
+                UiCategory.Fates => isOther && listing.Category == DutyCategory.Fate,
                 UiCategory.TreasureHunt => isOther && listing.Category == DutyCategory.TreasureHunt,
                 UiCategory.TheHunt => isOther && listing.Category == DutyCategory.TheHunt,
-                UiCategory.GatheringForays => isNormal && listing.Category == DutyCategory.GatheringForays,
-                UiCategory.DeepDungeons => isOther && listing.Category == DutyCategory.DeepDungeons,
-                UiCategory.AdventuringForays => isNormal && listing.Category == DutyCategory.AdventuringForays,
+                UiCategory.GatheringForays => isNormal && listing.Category == DutyCategory.GatheringForay,
+                UiCategory.DeepDungeons => isOther && listing.Category == DutyCategory.DeepDungeon,
+                UiCategory.AdventuringForays => isNormal && listing.Category == DutyCategory.FieldOperation,
                 UiCategory.VCDungeon => isNormal && listing.Duty.Value.ContentType.Row == (uint) ContentType2.VCDungeon,
                 _ => false,
             };
+
+            log.Verbose($"result: {result}");
+
+            return result;
         }
 
         private enum ContentType2 {

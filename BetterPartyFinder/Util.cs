@@ -28,7 +28,7 @@ namespace BetterPartyFinder {
             return CultureInfo.InvariantCulture.CompareInfo.IndexOf(haystack, needle, CompareOptions.IgnoreCase) >= 0;
         }
 
-        internal static IEnumerable<World> WorldsOnDataCentre(IDataManager data, PlayerCharacter character) {
+        internal static IEnumerable<World> WorldsOnDataCentre(IDataManager data, IPlayerCharacter character) {
             var dcRow = character.HomeWorld.GameData.DataCenter.Row;
             return data.GetExcelSheet<World>()!
                 .Where(world => world.IsPublic && world.DataCenter.Row == dcRow);

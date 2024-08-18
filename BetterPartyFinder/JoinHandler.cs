@@ -17,7 +17,7 @@ namespace BetterPartyFinder {
             this.Plugin.Common.Functions.PartyFinder.JoinParty -= this.OnJoin;
         }
 
-        private void OnJoin(PartyFinderListing listing) {
+        private void OnJoin(IPartyFinderListing listing) {
             if (!this.Plugin.Config.ShowDescriptionOnJoin) {
                 return;
             }

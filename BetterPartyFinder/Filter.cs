@@ -17,19 +17,21 @@ namespace BetterPartyFinder {
             this.Plugin.PartyFinderGui.ReceiveListing -= this.ReceiveListing;
         }
 
-        private void ReceiveListing(PartyFinderListing listing, PartyFinderListingEventArgs args) {
+        private void ReceiveListing(IPartyFinderListing listing, IPartyFinderListingEventArgs args) {
             args.Visible = args.Visible && this.ListingVisible(listing);
         }
 
-        private bool ListingVisible(PartyFinderListing listing) {
+        private bool ListingVisible(IPartyFinderListing listing) {
             // get the current preset or mark all pfs as visible
             var selectedId = this.Plugin.Config.SelectedPreset;
             if (selectedId == null || !this.Plugin.Config.Presets.TryGetValue(selectedId.Value, out var filter)) {
+                Plugin.PluginLog.Verbose("early exit 1");
                 return true;
             }
 
             // check max item level
             if (!filter.AllowHugeItemLevel && Util.MaxItemLevel > 0 && listing.MinimumItemLevel > Util.MaxItemLevel) {
+                Plugin.PluginLog.Verbose("early exit 2");
                 return false;
             }
 
@@ -46,37 +48,45 @@ namespace BetterPartyFinder {
 
             // filter based on item level range
             if (filter.MinItemLevel != null && listing.MinimumItemLevel < filter.MinItemLevel) {
+                Plugin.PluginLog.Verbose("early exit 3");
                 return false;
             }
 
             if (filter.MaxItemLevel != null && listing.MinimumItemLevel > filter.MaxItemLevel) {
+                Plugin.PluginLog.Verbose("early exit 4");
                 return false;
             }
 
             // filter based on restrictions
             // make sure the listing doesn't contain any of the toggled off search areas
             if (((listing.SearchArea ^ filter.SearchArea) & ~filter.SearchArea) > 0) {
+                Plugin.PluginLog.Verbose("early exit 5");
                 return false;
             }
 
             if (!listing[filter.LootRule]) {
+                Plugin.PluginLog.Verbose("early exit 6");
                 return false;
             }
 
             if (((listing.DutyFinderSettings ^ filter.DutyFinderSettings) & ~filter.DutyFinderSettings) > 0) {
+                Plugin.PluginLog.Verbose("early exit 7");
                 return false;
             }
 
             if (!listing[filter.Conditions]) {
+                Plugin.PluginLog.Verbose("early exit 8");
                 return false;
             }
 
             if (!listing[filter.Objectives]) {
+                Plugin.PluginLog.Verbose("early exit 9");
                 return false;
             }
 
             // filter based on category (slow)
-            if (!filter.Categories.Any(category => category.ListingMatches(this.Plugin.DataManager, listing))) {
+            if (!filter.Categories.Any(category => category.ListingMatches(this.Plugin.DataManager, listing, Plugin.PluginLog))) {
+                Plugin.PluginLog.Verbose("LISTINGMATCHES WAS FALSE");
                 return false;
             }
 

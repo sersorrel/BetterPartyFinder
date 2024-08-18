@@ -9,7 +9,7 @@ namespace BetterPartyFinder {
         internal static string Name => "Better Party Finder";
 
         [PluginService]
-        internal DalamudPluginInterface Interface { get; init; } = null!;
+        internal IDalamudPluginInterface Interface { get; init; } = null!;
 
         [PluginService]
         internal IChatGui ChatGui { get; init; } = null!;
@@ -28,6 +28,9 @@ namespace BetterPartyFinder {
 
         [PluginService]
         internal IPartyFinderGui PartyFinderGui { get; init; } = null!;
+
+        [PluginService]
+        internal IPluginLog PluginLog { get; init; } = null!;
 
         internal Configuration Config { get; }
         private Filter Filter { get; }
