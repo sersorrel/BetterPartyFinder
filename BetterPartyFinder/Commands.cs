@@ -2,37 +2,35 @@
 using System.Collections.Generic;
 using Dalamud.Game.Command;
 
-namespace BetterPartyFinder {
-    public class Commands : IDisposable {
-        private static readonly Dictionary<string, string> CommandNames = new() {
-            ["/betterpartyfinder"] = "Opens the main interface. Use with args \"c\" or \"config\" to open the settings.",
-            ["/bpf"] = "Alias for /betterpartyfinder",
-        };
+namespace BetterPartyFinder;
 
-        private Plugin Plugin { get; }
+public class Commands : IDisposable {
+    private static readonly Dictionary<string, string> CommandNames = new()
+    {
+        ["/betterpartyfinder"] = "Opens the main interface. Use with args \"c\" or \"config\" to open the settings.",
+        ["/bpf"] = "Alias for /betterpartyfinder",
+    };
 
-        internal Commands(Plugin plugin) {
-            this.Plugin = plugin;
+    private Plugin Plugin { get; }
 
-            foreach (var (name, help) in CommandNames) {
-                Plugin.CommandManager.AddHandler(name, new CommandInfo(this.OnCommand) {
-                    HelpMessage = help,
-                });
-            }
-        }
+    internal Commands(Plugin plugin) {
+        Plugin = plugin;
 
-        public void Dispose() {
-            foreach (var name in CommandNames.Keys) {
-                Plugin.CommandManager.RemoveHandler(name);
-            }
-        }
+        foreach (var (name, help) in CommandNames)
+            Plugin.CommandManager.AddHandler(name, new CommandInfo(OnCommand) { HelpMessage = help, });
+    }
 
-        private void OnCommand(string command, string args) {
-            if (args is "c" or "config") {
-                this.Plugin.Ui.SettingsVisible = !this.Plugin.Ui.SettingsVisible;
-            } else {
-                this.Plugin.Ui.Visible = !this.Plugin.Ui.Visible;
-            }
-        }
+    public void Dispose()
+    {
+        foreach (var name in CommandNames.Keys)
+            Plugin.CommandManager.RemoveHandler(name);
+    }
+
+    private void OnCommand(string command, string args)
+    {
+        if (args is "c" or "config")
+            Plugin.ConfigWindow.Toggle();
+        else
+            Plugin.MainWindow.Toggle();
     }
 }

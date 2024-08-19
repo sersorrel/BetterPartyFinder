@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net8-windows</TargetFramework>
-        <Version>1.3.0</Version>
+        <Version>1.4.0</Version>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -26,7 +26,6 @@
     <PropertyGroup Condition="'$(IsCI)' == 'true'">
         <DalamudLibPath>$(HOME)/dalamud</DalamudLibPath>
     </PropertyGroup>
-
 
     <ItemGroup>
         <Reference Include="Dalamud">

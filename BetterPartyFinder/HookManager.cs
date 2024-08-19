@@ -16,8 +16,10 @@ public unsafe class HookManager
         Plugin.GameInteropProvider.InitializeFromAttributes(this);
     }
 
-    public void RefreshListings() {
-        if (this.RequestPartyFinderListings == null) {
+    public void RefreshListings()
+    {
+        if (RequestPartyFinderListings == null)
+        {
             throw new InvalidOperationException("Could not find signature for Party Finder listings");
         }
 

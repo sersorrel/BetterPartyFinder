@@ -2,36 +2,37 @@
 using System.Globalization;
 using System.Linq;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.Plugin.Services;
 using Lumina.Excel.GeneratedSheets;
 
-namespace BetterPartyFinder {
-    public static class Util {
-        internal static uint MaxItemLevel { get; private set; }
+namespace BetterPartyFinder;
 
-        internal static void CalculateMaxItemLevel(IDataManager data) {
-            if (MaxItemLevel > 0) {
-                return;
-            }
+public static class Util
+{
+    internal static uint MaxItemLevel { get; private set; }
 
-            var max = data.GetExcelSheet<Item>()!
-                .Where(item => item.EquipSlotCategory.Value!.Body != 0)
-                .Select(item => item.LevelItem.Value?.RowId)
-                .Where(level => level != null)
-                .Cast<uint>()
-                .Max();
+    internal static void CalculateMaxItemLevel()
+    {
+        if (MaxItemLevel > 0)
+            return;
 
-            MaxItemLevel = max;
-        }
+        var max = Plugin.DataManager.GetExcelSheet<Item>()!
+            .Where(item => item.EquipSlotCategory.Value!.Body != 0)
+            .Select(item => item.LevelItem.Value?.RowId)
+            .Where(level => level != null)
+            .Cast<uint>()
+            .Max();
 
-        internal static bool ContainsIgnoreCase(this string haystack, string needle) {
-            return CultureInfo.InvariantCulture.CompareInfo.IndexOf(haystack, needle, CompareOptions.IgnoreCase) >= 0;
-        }
+        MaxItemLevel = max;
+    }
 
-        internal static IEnumerable<World> WorldsOnDataCentre(IDataManager data, IPlayerCharacter character) {
-            var dcRow = character.HomeWorld.GameData.DataCenter.Row;
-            return data.GetExcelSheet<World>()!
-                .Where(world => world.IsPublic && world.DataCenter.Row == dcRow);
-        }
+    internal static bool ContainsIgnoreCase(this string haystack, string needle)
+    {
+        return CultureInfo.InvariantCulture.CompareInfo.IndexOf(haystack, needle, CompareOptions.IgnoreCase) >= 0;
+    }
+
+    internal static IEnumerable<World> WorldsOnDataCentre(IPlayerCharacter character)
+    {
+        var dcRow = character.HomeWorld.GameData.DataCenter.Row;
+        return Plugin.DataManager.GetExcelSheet<World>()!.Where(world => world.IsPublic && world.DataCenter.Row == dcRow);
     }
 }
