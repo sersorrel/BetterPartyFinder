@@ -50,13 +50,13 @@ namespace BetterPartyFinder {
         internal PluginUi(Plugin plugin) {
             this.Plugin = plugin;
 
-            this.Plugin.Interface.UiBuilder.Draw += this.Draw;
-            this.Plugin.Interface.UiBuilder.OpenConfigUi += this.OnOpenConfig;
+            Plugin.Interface.UiBuilder.Draw += this.Draw;
+            Plugin.Interface.UiBuilder.OpenConfigUi += this.OnOpenConfig;
         }
 
         public void Dispose() {
-            this.Plugin.Interface.UiBuilder.Draw -= this.Draw;
-            this.Plugin.Interface.UiBuilder.OpenConfigUi -= this.OnOpenConfig;
+            Plugin.Interface.UiBuilder.Draw -= this.Draw;
+            Plugin.Interface.UiBuilder.OpenConfigUi -= this.OnOpenConfig;
         }
 
         private void OnOpenConfig() {
@@ -79,7 +79,7 @@ namespace BetterPartyFinder {
         }
 
         private IntPtr PartyFinderAddon() {
-            return this.Plugin.GameGui.GetAddonByName("LookingForGroup", 1);
+            return Plugin.GameGui.GetAddonByName("LookingForGroup", 1);
         }
 
         private void Draw() {
@@ -114,14 +114,6 @@ namespace BetterPartyFinder {
                     _ => this.Plugin.Config.WindowSide,
                 };
 
-                this.Plugin.Config.Save();
-            }
-
-            ImGui.Separator();
-
-            var showDesc = this.Plugin.Config.ShowDescriptionOnJoin;
-            if (ImGui.Checkbox("Show PF description in chat after joining", ref showDesc)) {
-                this.Plugin.Config.ShowDescriptionOnJoin = showDesc;
                 this.Plugin.Config.Save();
             }
 
@@ -185,7 +177,7 @@ namespace BetterPartyFinder {
                     this.Plugin.Config.SelectedPreset = null;
                     this.Plugin.Config.Save();
 
-                    this.Plugin.Common.Functions.PartyFinder.RefreshListings();
+                    this.Plugin.HookManager.RefreshListings();
                 }
 
                 foreach (var preset in this.Plugin.Config.Presets) {
@@ -196,7 +188,7 @@ namespace BetterPartyFinder {
                     this.Plugin.Config.SelectedPreset = preset.Key;
                     this.Plugin.Config.Save();
 
-                    this.Plugin.Common.Functions.PartyFinder.RefreshListings();
+                    this.Plugin.HookManager.RefreshListings();
                 }
 
                 ImGui.EndCombo();
@@ -314,7 +306,7 @@ namespace BetterPartyFinder {
 
             foreach (var category in (UiCategory[]) Enum.GetValues(typeof(UiCategory))) {
                 var selected = filter.Categories.Contains(category);
-                if (!ImGui.Selectable(category.Name(this.Plugin.DataManager), ref selected)) {
+                if (!ImGui.Selectable(category.Name(Plugin.DataManager), ref selected)) {
                     continue;
                 }
 
@@ -363,7 +355,7 @@ namespace BetterPartyFinder {
             }
 
             if (ImGui.BeginChild("duty-selection", new Vector2(-1f, -1f))) {
-                var duties = this.Plugin.DataManager.GetExcelSheet<ContentFinderCondition>()!
+                var duties = Plugin.DataManager.GetExcelSheet<ContentFinderCondition>()!
                     .Where(cf => cf.Unknown30)
                     .Where(cf => AllowedContentTypes.Contains(cf.ContentType.Row));
 
@@ -474,7 +466,7 @@ namespace BetterPartyFinder {
 
                 foreach (var job in (JobFlags[]) Enum.GetValues(typeof(JobFlags))) {
                     var selected = (slot & job) > 0;
-                    if (!ImGui.Selectable(job.ClassJob(this.Plugin.DataManager)?.Name ?? "???", ref selected)) {
+                    if (!ImGui.Selectable(job.ClassJob(Plugin.DataManager)?.Name ?? "???", ref selected)) {
                         continue;
                     }
 
@@ -605,7 +597,7 @@ namespace BetterPartyFinder {
         private string _playerName = string.Empty;
 
         private void DrawPlayersTab(ConfigurationFilter filter) {
-            var player = this.Plugin.ClientState.LocalPlayer;
+            var player = Plugin.ClientState.LocalPlayer;
 
             if (player == null || !ImGui.BeginTabItem("Players")) {
                 return;
@@ -617,7 +609,7 @@ namespace BetterPartyFinder {
 
             ImGui.SameLine();
 
-            var worlds = Util.WorldsOnDataCentre(this.Plugin.DataManager, player)
+            var worlds = Util.WorldsOnDataCentre(Plugin.DataManager, player)
                 .OrderBy(world => world.Name.RawString)
                 .ToList();
 
@@ -644,7 +636,7 @@ namespace BetterPartyFinder {
             PlayerInfo? deleting = null;
 
             foreach (var info in filter.Players) {
-                var world = this.Plugin.DataManager.GetExcelSheet<World>()!.GetRow(info.World);
+                var world = Plugin.DataManager.GetExcelSheet<World>()!.GetRow(info.World);
                 ImGui.TextUnformatted($"{info.Name}@{world?.Name}");
                 ImGui.SameLine();
                 if (IconButton(FontAwesomeIcon.Trash, $"delete-player-{info.GetHashCode()}")) {

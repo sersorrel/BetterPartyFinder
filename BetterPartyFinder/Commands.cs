@@ -15,7 +15,7 @@ namespace BetterPartyFinder {
             this.Plugin = plugin;
 
             foreach (var (name, help) in CommandNames) {
-                this.Plugin.CommandManager.AddHandler(name, new CommandInfo(this.OnCommand) {
+                Plugin.CommandManager.AddHandler(name, new CommandInfo(this.OnCommand) {
                     HelpMessage = help,
                 });
             }
@@ -23,7 +23,7 @@ namespace BetterPartyFinder {
 
         public void Dispose() {
             foreach (var name in CommandNames.Keys) {
-                this.Plugin.CommandManager.RemoveHandler(name);
+                Plugin.CommandManager.RemoveHandler(name);
             }
         }
 

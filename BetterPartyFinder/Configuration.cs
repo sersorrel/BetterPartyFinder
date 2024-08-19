@@ -15,10 +15,9 @@ namespace BetterPartyFinder {
 
         public bool ShowWhenPfOpen { get; set; }
         public WindowSide WindowSide { get; set; } = WindowSide.Left;
-        public bool ShowDescriptionOnJoin { get; set; } = true;
 
         internal static Configuration? Load(Plugin plugin) {
-            return (Configuration?) plugin.Interface.GetPluginConfig();
+            return (Configuration?) Plugin.Interface.GetPluginConfig();
         }
 
         internal void Initialise(Plugin plugin) {
@@ -26,7 +25,7 @@ namespace BetterPartyFinder {
         }
 
         internal void Save() {
-            this.Plugin?.Interface.SavePluginConfig(this);
+            Plugin.Interface.SavePluginConfig(this);
         }
     }
 

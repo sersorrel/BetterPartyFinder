@@ -10,11 +10,11 @@ namespace BetterPartyFinder {
         internal Filter(Plugin plugin) {
             this.Plugin = plugin;
 
-            this.Plugin.PartyFinderGui.ReceiveListing += this.ReceiveListing;
+            Plugin.PartyFinderGui.ReceiveListing += this.ReceiveListing;
         }
 
         public void Dispose() {
-            this.Plugin.PartyFinderGui.ReceiveListing -= this.ReceiveListing;
+            Plugin.PartyFinderGui.ReceiveListing -= this.ReceiveListing;
         }
 
         private void ReceiveListing(IPartyFinderListing listing, IPartyFinderListingEventArgs args) {
@@ -85,7 +85,7 @@ namespace BetterPartyFinder {
             }
 
             // filter based on category (slow)
-            if (!filter.Categories.Any(category => category.ListingMatches(this.Plugin.DataManager, listing, Plugin.PluginLog))) {
+            if (!filter.Categories.Any(category => category.ListingMatches(Plugin.DataManager, listing, Plugin.PluginLog))) {
                 Plugin.PluginLog.Verbose("LISTINGMATCHES WAS FALSE");
                 return false;
             }
@@ -118,7 +118,7 @@ namespace BetterPartyFinder {
                                     continue;
                                 }
 
-                                var job = possibleJob.ClassJob(this.Plugin.DataManager);
+                                var job = possibleJob.ClassJob(Plugin.DataManager);
                                 if (present.Contains((byte) job.RowId)) {
                                     continue;
                                 }
